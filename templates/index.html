@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IncomeTron</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('{{ url_for('static', filename='income.jpg') }}'); /* Background Image */
+            background-repeat: no-repeat; /* Prevents tiling */
+            background-position: center; /* Centers the image */
+            background-attachment: fixed; /* Keeps the background fixed */
+            background-size: cover; /* Maintains the image's original dimensions */
+        }
+
+        /* Main Container Styles */
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            font-size: 28px;
+        }
+
+        label {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: black;
+        }
+
+        input[type="number"], button {
+            padding: 10px;
+            width: 100%;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Information Section Styles */
+        .info-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 5px;
+            border-radius: 8px;
+            text-align: center;
+            position: fixed; /* Fixes the section to the bottom */
+            bottom: 0; /* Aligns it to the bottom of the viewport */
+            left: 0;
+            right: 0;
+    
+           
+            
+        }
+
+        .info-section h3 {
+            color: #4CAF50;
+        }
+
+        .info-section p {
+            color: #333;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Application Container -->
+    <div class="container">
+        <h1>IncomeTron</h1>
+        <form id="predictForm">
+            <label for="year">Enter Year:</label>
+            <input type="number" id="year" name="year" required>
+            <button type="submit">Predict Income</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <!-- Information Section -->
+    <div class="info-section">
+        <h3>Canada's GDP and Economic Overview</h3>
+        <p>
+            Canada, one of the world's largest economies, has seen consistent growth in its GDP over the years,
+            driven by its vast natural resources, high-tech industries, and services sector. The per capita income,
+            a key indicator of economic well-being, reflects the overall economic output divided by the population.
+            This project predicts the per capita income for any given year based on historical data, helping to
+            understand the future trajectory of Canada's economic growth.
+        </p>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.getElementById('predictForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const year = document.getElementById('year').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    'year': year
+                }),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = `Predicted Per Capita Income for ${year}: $${data.predicted_income.toFixed(2)}`;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+
+</body>
+</html>
